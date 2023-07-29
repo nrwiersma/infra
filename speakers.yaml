@@ -1,0 +1,24 @@
+---
+- name: Raspberry Pi Setup
+  hosts: speakers
+  become: true
+  roles:
+    - raspberrypi
+
+- name: Deploy raspotify
+  hosts: speakers
+  become: true
+  roles:
+    - raspotify
+
+- name: Deploy snapserver
+  hosts: snapserver
+  become: true
+  roles:
+    - snapcast/server
+
+- name: Deploy snapclient
+  hosts: speakers
+  become: true
+  roles:
+    - snapcast/client

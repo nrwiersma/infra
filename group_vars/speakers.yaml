@@ -1,0 +1,6 @@
+---
+raspotify:
+  deb_path: "https://github.com/dtcooper/raspotify/releases/download/0.31.8.1/raspotify_0.31.8.1.librespot.v0.3.1-54-gf4be9bb_armhf.deb"
+  config_regexp:
+    'LIBRESPOT_INITIAL_VOLUME=': 'LIBRESPOT_INITIAL_VOLUME="50"'
+    'LIBRESPOT_VOLUME_RANGE=': 'LIBRESPOT_VOLUME_RANGE="80.0"'

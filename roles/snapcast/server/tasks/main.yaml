@@ -1,0 +1,15 @@
+---
+- name: Install snapserver package
+  apt:
+    name: snapserver
+    state: latest
+    update_cache: yes
+
+- name: Update snapserver config
+  lineinfile:
+    path: /etc/snapserver.conf
+    regexp: '^#source ='
+    line: source = {{ snapserver.source }}
+  when: snapserver.source is defined and snapserver.source|length != 0
+  notify:
+    - Restart snapserver

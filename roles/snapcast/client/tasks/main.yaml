@@ -1,0 +1,6 @@
+---
+- name: Install snapclient package
+  apt:
+    name: snapclient
+    state: latest
+    update_cache: yes

@@ -1,0 +1,41 @@
+---
+- block:
+    - name: Install apt key
+      apt_key:
+        url: https://dtcooper.github.io/raspotify/key.asc
+        state: present
+
+    - name: Install apt repo
+      apt_repository:
+        repo: deb https://dtcooper.github.io/raspotify raspotify main
+        state: present
+
+    - name: Install raspotify
+      apt:
+        name: raspotify
+        state: latest
+        update_cache: yes
+  when: raspotify.deb_path is not defined or not raspotify.deb_path
+  ignore_errors: true
+
+- name: Install respotify from package
+  apt:
+    deb: "{{ raspotify.deb_path }}"
+  when: raspotify.deb_path is defined and raspotify.deb_path
+  ignore_errors: true
+
+- name: Set device name
+  lineinfile:
+    path: /etc/raspotify/conf
+    regexp: 'LIBRESPOT_NAME='
+    line: LIBRESPOT_NAME="{{ inventory_hostname_short.replace('-', ' ').replace('_', ' ') | title }}"
+  notify: Restart raspotify
+
+- name: Set config
+  lineinfile:
+    path: /etc/raspotify/conf
+    regexp: "{{ item.key }}"
+    line: "{{ item.value }}"
+  loop: "{{ raspotify.config_regexp | dict2items  }}"
+  notify: Restart raspotify
+  when: raspotify.config_regexp is defined and raspotify.config_regexp
