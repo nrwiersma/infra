@@ -1,0 +1,15 @@
+---
+- name: Install snapserver package
+  ansible.builtin.apt:
+    name: snapserver
+    state: latest
+    update_cache: true
+
+- name: Update snapserver config
+  ansible.builtin.lineinfile:
+    path: /etc/snapserver.conf
+    regexp: '^#source ='
+    line: source = {{ snapserver.source }}
+  when: snapserver.source is defined and snapserver.source|length != 0
+  notify:
+    - Restart snapserver

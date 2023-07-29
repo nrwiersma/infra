@@ -1,0 +1,8 @@
+---
+exclude_paths:
+  - .github
+
+skip_list:
+  - 'package-latest'
+  - 'role-name[path]'
+  - 'yaml[line-length]'  # Lines should be no longer than 160 chars

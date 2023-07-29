@@ -1,0 +1,3 @@
+---
+snapserver:
+  source: librespot:///librespot?name=all_speakers&devicename=All Speakers&bitrate=160&volume=50

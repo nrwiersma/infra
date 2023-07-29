@@ -1,0 +1,3 @@
+lint:
+	@yamllint ./
+.PHONY: lint
