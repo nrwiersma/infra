@@ -1,6 +1,6 @@
 ---
 - name: Install snapclient package
-  apt:
+  ansible.builtin.apt:
     name: snapclient
     state: latest
-    update_cache: yes
+    update_cache: true

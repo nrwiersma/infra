@@ -1,12 +1,12 @@
 ---
 - name: Install snapserver package
-  apt:
+  ansible.builtin.apt:
     name: snapserver
     state: latest
-    update_cache: yes
+    update_cache: true
 
 - name: Update snapserver config
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/snapserver.conf
     regexp: '^#source ='
     line: source = {{ snapserver.source }}
