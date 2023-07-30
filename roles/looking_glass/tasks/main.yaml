@@ -35,10 +35,10 @@
     dest: /home/glass/
     owner: glass
     group: glass
-    mode: 0644
+    mode: "0644"
 
 - name: Clone the configuration
-  git:
+  ansible.legacy.git:
     repo: "{{ looking_glass.git_repo }}"
     version: "{{ looking_glass.git_branch }}"
     dest: /home/glass/looking-glass
@@ -49,27 +49,28 @@
   when: looking_glass.git_repo is defined and looking_glass.git_repo
 
 - name: Get current systemd default
-  command: systemctl get-default
+  ansible.legacy.command: systemctl get-default
   changed_when: false
   register: systemddefault
 
 - name: Set default to multi-user target
-  command: systemctl set-default multi-user.target
+  ansible.legacy.command: systemctl set-default multi-user.target
+  changed_when: false
   when: "'multi-user.target' not in systemddefault.stdout"
 
 - name: Create systemd getty directory
-  file:
+  ansible.legacy.file:
     path: /etc/systemd/system/getty@tty1.service.d/
-    recurse: yes
+    recurse: true
     state: directory
 
 - name: Setup autologin
-  template:
+  ansible.legacy.template:
     src: autologin.j2
     dest: /etc/systemd/system/getty@tty1.service.d/autologin.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: Activating splash
   ansible.builtin.lineinfile:
@@ -84,28 +85,30 @@
     dest: /usr/share/plymouth/themes/looking-glass/
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: Set splash theme
-  command: plymouth-set-default-theme -R looking-glass
+  ansible.legacy.command: plymouth-set-default-theme -R looking-glass
+  changed_when: false
 
 - name: Determine architecture
-  command: uname -m
-  ignore_errors: yes
+  ansible.legacy.command: uname -m
+  ignore_errors: true
   register: arch
+  changed_when: false
 
 - name: Download looking-glass
-  get_url:
-    url: "https://github.com/glasslabs/looking-glass/releases/download/{{ looking_glass.version}}/looking-glass_{{ looking_glass.version}}_linux_{{ arch.stdout[:-1] }}.tar.gz"
+  ansible.legacy.get_url:
+    url: "https://github.com/glasslabs/looking-glass/releases/download/{{ looking_glass.version }}/looking-glass_{{ looking_glass.version }}_linux_{{ arch.stdout[:-1] }}.tar.gz"
     dest: /home/glass/
   register: download_lg
 
 - name: Install looking-glass
   ansible.builtin.unarchive:
-    src: "/home/glass/looking-glass_{{ looking_glass.version}}_linux_{{ arch.stdout[:-1] }}.tar.gz"
+    src: "/home/glass/looking-glass_{{ looking_glass.version }}_linux_{{ arch.stdout[:-1] }}.tar.gz"
     dest: /usr/local/bin
     remote_src: true
     include: glass
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"

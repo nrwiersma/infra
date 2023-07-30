@@ -9,4 +9,4 @@
   hosts: mirror
   become: true
   roles:
-    - looking-glass
+    - looking_glass
