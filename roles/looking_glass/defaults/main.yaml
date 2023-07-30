@@ -1,0 +1,6 @@
+---
+looking_glass:
+  git_repo: ""
+  git_branch: "main"
+  version: "v0.6.0"
+  chromium_version: 98.0.4758.106-rpt1

@@ -1,0 +1,114 @@
+---
+- name: Install packages
+  ansible.builtin.apt:
+    pkg:
+      - git
+      - plymouth
+      - plymouth-themes
+      - xserver-xorg-video-all
+      - xserver-xorg-input-all
+      - xserver-xorg-core
+      - xinit
+      - x11-xserver-utils
+      - unclutter
+
+- name: Install Chromium
+  ansible.builtin.apt:
+    name: "chromium-browser={{ looking_glass.chromium_version }}"
+
+- name: Pin Chromium version
+  ansible.builtin.dpkg_selections:
+    name: chromium-browser
+    selection: hold
+
+- name: Create user
+  ansible.builtin.user:
+    name: glass
+    shell: /usr/bin/bash
+    groups: adm,dialout,cdrom,audio,video,plugdev,games,users,input,netdev,spi,i2c,gpio
+    create_home: true
+    append: true
+
+- name: Copy user files
+  ansible.builtin.copy:
+    src: home
+    dest: /home/glass/
+    owner: glass
+    group: glass
+    mode: "0644"
+
+- name: Clone the configuration
+  ansible.legacy.git:
+    repo: "{{ looking_glass.git_repo }}"
+    version: "{{ looking_glass.git_branch }}"
+    dest: /home/glass/looking-glass
+    clone: true
+    update: true
+  become: true
+  become_user: glass
+  when: looking_glass.git_repo is defined and looking_glass.git_repo
+
+- name: Get current systemd default
+  ansible.legacy.command: systemctl get-default
+  changed_when: false
+  register: systemddefault
+
+- name: Set default to multi-user target
+  ansible.legacy.command: systemctl set-default multi-user.target
+  changed_when: false
+  when: "'multi-user.target' not in systemddefault.stdout"
+
+- name: Create systemd getty directory
+  ansible.legacy.file:
+    path: /etc/systemd/system/getty@tty1.service.d/
+    recurse: true
+    state: directory
+
+- name: Setup autologin
+  ansible.legacy.template:
+    src: autologin.j2
+    dest: /etc/systemd/system/getty@tty1.service.d/autologin.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Activating splash
+  ansible.builtin.lineinfile:
+    path: /boot/cmdline.txt
+    regexp: '^((?!.*\bquiet splash plymouth.ignore-serial-consoles\b).*)$'
+    line: '\1 quiet splash plymouth.ignore-serial-consoles'
+    backrefs: true
+
+- name: Create splash theme
+  ansible.builtin.copy:
+    src: splashscreen
+    dest: /usr/share/plymouth/themes/looking-glass/
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Set splash theme
+  ansible.legacy.command: plymouth-set-default-theme -R looking-glass
+  changed_when: false
+
+- name: Determine architecture
+  ansible.legacy.command: uname -m
+  ignore_errors: true
+  register: arch
+  changed_when: false
+
+- name: Download looking-glass
+  ansible.legacy.get_url:
+    url: "https://github.com/glasslabs/looking-glass/releases/download/{{ looking_glass.version }}/looking-glass_{{ looking_glass.version }}_linux_{{ arch.stdout[:-1] }}.tar.gz"
+    dest: /home/glass/
+  register: download_lg
+
+- name: Install looking-glass
+  ansible.builtin.unarchive:
+    src: "/home/glass/looking-glass_{{ looking_glass.version }}_linux_{{ arch.stdout[:-1] }}.tar.gz"
+    dest: /usr/local/bin
+    remote_src: true
+    include: glass
+    owner: root
+    group: root
+    mode: "0755"

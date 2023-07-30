@@ -1,3 +1,3 @@
 lint:
-	@yamllint ./
+	@ansible-lint
 .PHONY: lint
