@@ -1,0 +1,12 @@
+---
+- name: Raspberry Pi Setup
+  hosts: mirror
+  become: true
+  roles:
+    - raspberrypi
+
+- name: Looking glass
+  hosts: mirror
+  become: true
+  roles:
+    - looking-glass
