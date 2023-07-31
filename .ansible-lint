@@ -4,5 +4,7 @@ exclude_paths:
 
 skip_list:
   - 'package-latest'
+  - 'command-instead-of-module'
+  - 'latest[git]'
   - 'role-name[path]'
   - 'yaml[line-length]'  # Lines should be no longer than 160 chars
