@@ -1,0 +1,35 @@
+---
+- name: Clone the configuration
+  ansible.builtin.git:
+    repo: "{{ looking_glass.git_repo }}"
+    dest: /home/glass/looking-glass
+    clone: true
+    update: true
+  become: true
+  become_user: glass
+  when: looking_glass.git_repo is defined and looking_glass.git_repo
+
+- name: Create configuration
+  when: looking_glass.git_repo is not defined or not looking_glass.git_repo
+  block:
+    - name: Create configuration directory
+      ansible.builtin.file:
+        path: /home/glass/looking-glass/modules
+        recurse: true
+        state: directory
+
+    - name: Copy config file
+      ansible.builtin.copy:
+        src: config.yaml.file
+        dest: /home/glass/looking-glass/config.yaml
+        owner: glass
+        group: glass
+        mode: "0644"
+
+    - name: Create secrets file
+      ansible.builtin.file:
+        path: /home/glass/looking-glass/secrets.yaml
+        state: touch
+        owner: glass
+        group: glass
+        mode: "0644"

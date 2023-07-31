@@ -1,0 +1,25 @@
+---
+- name: Install splashscreen packages
+  ansible.builtin.apt:
+    pkg:
+      - plymouth
+      - plymouth-themes
+
+- name: Activating splash
+  ansible.builtin.lineinfile:
+    path: /boot/cmdline.txt
+    regexp: '^((?!.*\bquiet splash plymouth.ignore-serial-consoles\b).*)$'
+    line: '\1 quiet splash plymouth.ignore-serial-consoles'
+    backrefs: true
+
+- name: Create splash theme
+  ansible.builtin.copy:
+    src: splashscreen
+    dest: /usr/share/plymouth/themes/looking-glass/
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Set splash theme
+  ansible.builtin.command: plymouth-set-default-theme -R looking-glass
+  changed_when: false
