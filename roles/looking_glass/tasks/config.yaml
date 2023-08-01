@@ -20,7 +20,7 @@
 
     - name: Copy config file
       ansible.builtin.copy:
-        src: config.yaml.file
+        src: config.yaml
         dest: /home/glass/looking-glass/config.yaml
         owner: glass
         group: glass
