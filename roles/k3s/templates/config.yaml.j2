@@ -1,0 +1,31 @@
+---
+node-name: {{ k3s.node_name }}
+
+data-dir: /var/lib/rancher/k3s
+
+node-label:
+  - topology.kubernetes.io/zone={{ k3s.node_name | regex_search(k3s.zone_regex) }}
+
+{% if inventory_hostname != groups[k3s.server_group][0] %}token-file: /var/lib/rancher/k3s/server/node-token{% endif %}
+
+{% if inventory_hostname != groups[k3s.server_group][0] %}
+server: https://{{ hostvars[groups[k3s.server_group][0]].inventory_hostname }}:6443
+{% elif groups[k3s.server_group]|length > 1 %}
+cluster-init: true
+{% endif %}
+
+{% if inventory_hostname in groups[k3s.server_group] %}
+secrets-encryption: true
+
+node-taint:
+  - node-role.kubernetes.io/master=true:NoSchedule
+
+flannel-backend: none
+disable-network-policy: true
+disable-kube-proxy: true
+
+disable: traefik,servicelb,local-storage
+
+write-kubeconfig-mode: 600
+write-kubeconfig: /etc/rancher/k3s/kubeconfig
+{% endif %}
