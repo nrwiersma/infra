@@ -1,0 +1,15 @@
+---
+- name: Raspberry Pi Setup
+  hosts: k3s
+  become: true
+  roles:
+    - raspberrypi
+    - raspberrypi/cgroups
+    - raspberrypi/k3s
+    - raspberrypi/longhorn
+
+- name: K3S
+  hosts: k3s
+  become: true
+  roles:
+    - k3s

@@ -1,0 +1,6 @@
+---
+k3s:
+  node_name: "{{ inventory_hostname_short }}"
+  version: v1.29.0+k3s1
+  server_group: 'k3s_servers'
+  zone_regex: '(k3s\d\d).*'
