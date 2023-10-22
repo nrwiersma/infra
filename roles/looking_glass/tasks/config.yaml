@@ -18,6 +18,12 @@
         recurse: true
         state: directory
 
+    - name: Create assets directory
+      ansible.builtin.file:
+        path: /home/glass/looking-glass/assets
+        recurse: true
+        state: directory
+
     - name: Copy config file
       ansible.builtin.copy:
         src: config.yaml

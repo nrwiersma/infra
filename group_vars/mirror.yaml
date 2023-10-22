@@ -1,4 +1,3 @@
 ---
 looking_glass:
   git_repo: https://github.com/nrwiersma/looking-glass-config.git
-  chromium_version: 98.0.4758.106-rpt1
