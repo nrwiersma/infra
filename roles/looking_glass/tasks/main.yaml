@@ -38,15 +38,7 @@
       - xinit
       - x11-xserver-utils
       - unclutter
-
-- name: Install Chromium
-  ansible.builtin.apt:
-    name: "chromium-browser={{ looking_glass.chromium_version }}"
-
-- name: Pin Chromium version
-  ansible.builtin.dpkg_selections:
-    name: chromium-browser
-    selection: hold
+      - chromium-browser
 
 - name: Create user
   ansible.builtin.user:
@@ -56,10 +48,18 @@
     create_home: true
     append: true
 
-- name: Copy user files
+- name: Copy Bash Profile files
   ansible.builtin.copy:
-    src: home
-    dest: /home/glass/
+    src: home/.bash_profile
+    dest: /home/glass/.bash_profile
+    owner: glass
+    group: glass
+    mode: "0644"
+
+- name: Copy XInitRC files
+  ansible.builtin.copy:
+    src: home/.xinitrc
+    dest: /home/glass/.xinitrc
     owner: glass
     group: glass
     mode: "0644"
