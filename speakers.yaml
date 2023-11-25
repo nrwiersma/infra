@@ -4,6 +4,7 @@
   become: true
   roles:
     - raspberrypi
+    - raspberrypi/bootconfig
 
 - name: Deploy raspotify
   hosts: speakers

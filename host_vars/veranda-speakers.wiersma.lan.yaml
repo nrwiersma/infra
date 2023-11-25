@@ -1,0 +1,6 @@
+---
+raspotify:
+  deb_path: ""
+  config_regexp:
+    'LIBRESPOT_INITIAL_VOLUME=': 'LIBRESPOT_INITIAL_VOLUME="50"'
+    'LIBRESPOT_VOLUME_RANGE=': 'LIBRESPOT_VOLUME_RANGE="80.0"'

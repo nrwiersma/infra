@@ -1,0 +1,26 @@
+---
+- name: "Adding lines to {{ raspberrypi.boot_config.file }}"
+  ansible.builtin.lineinfile:
+    line: '{{ item }}'
+    dest: "{{ raspberrypi.boot_config.file }}"
+    regexp: "^{{ item }}"
+  with_items: '{{ raspberrypi.boot_config.add }}'
+  notify: Reboot and wait for restart
+
+- name: "Adjusting lines in {{ raspberrypi.boot_config.file }}"
+  ansible.builtin.lineinfile:
+    line: '{{ item.with }}'
+    dest: "{{ raspberrypi.boot_config.file }}"
+    regexp: "^{{ item.find }}$"
+    backrefs: true
+  with_items: '{{ raspberrypi.boot_config.replace }}'
+  notify: Reboot and wait for restart
+
+- name: "Disabling lines in {{ raspberrypi.boot_config.file }}"
+  ansible.builtin.lineinfile:
+    line: '#{{ item }}'
+    dest: "{{ raspberrypi.boot_config.file }}"
+    regexp: "^{{ item }}$"
+    backrefs: true
+  with_items: '{{ raspberrypi.boot_config.disable }}'
+  notify: Reboot and wait for restart

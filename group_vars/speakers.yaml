@@ -1,4 +1,16 @@
 ---
+raspberrypi:
+  boot_config:
+    file: /boot/config.txt
+    add:
+      - dtoverlay=hifiberry-dacplus
+    replace:
+      - find: dtoverlay=vc4-fkms-v3d
+        with: dtoverlay=vc4-fkms-v3d,audio=off
+      - find: dtoverlay=vc4-kms-v3d
+        with: dtoverlay=vc4-kms-v3d,noaudio
+    disable:
+      - dtparam=audio=on
 raspotify:
   deb_path: "https://github.com/dtcooper/raspotify/releases/download/0.31.8.1/raspotify_0.31.8.1.librespot.v0.3.1-54-gf4be9bb_armhf.deb"
   config_regexp:
