@@ -8,4 +8,5 @@ skip_list:
   - 'command-instead-of-module'
   - 'latest[git]'
   - 'role-name[path]'
+  - 'var-naming[no-role-prefix]'
   - 'yaml[line-length]'  # Lines should be no longer than 160 chars

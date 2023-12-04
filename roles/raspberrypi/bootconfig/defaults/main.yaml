@@ -1,0 +1,7 @@
+---
+raspberrypi:
+  boot_config:
+    file: /boot/config.txt
+    add: []
+    replace: {}
+    disable: []

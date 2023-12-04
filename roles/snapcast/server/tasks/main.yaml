@@ -5,11 +5,12 @@
     state: latest
     update_cache: true
 
-- name: Update snapserver config
+- name: Update default source
   ansible.builtin.lineinfile:
     path: /etc/snapserver.conf
-    regexp: '^#source ='
+    regexp: '^source = pipe:\/\/\/tmp\/snapfifo\?name=default$'
     line: source = {{ snapserver.source }}
+    backrefs: true
   when: snapserver.source is defined and snapserver.source|length != 0
   notify:
     - Restart snapserver
