@@ -18,7 +18,7 @@ cluster-init: true
 secrets-encryption: true
 
 node-taint:
-  - node-role.kubernetes.io/master=true:NoSchedule
+  - node-role.kubernetes.io/control-plane:NoSchedule
 
 flannel-backend: none
 disable-network-policy: true

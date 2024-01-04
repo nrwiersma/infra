@@ -92,3 +92,32 @@
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
+
+- name: Ensure that the manifests directory exists
+  ansible.builtin.file:
+    path: "{{ k3s.manifests.path }}"
+    state: directory
+    mode: "0755"
+  when: >-
+    groups[k3s.server_group][0] == inventory_hostname and
+    (k3s.manifests.templates | length > 0 or k3s.manifests.urls | length > 0)
+
+- name: Ensure auto-deploying manifests are copied to the first server
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ k3s.manifests.path }}/{{ item | basename | replace('.j2', '') }}"
+    mode: "0644"
+  loop: "{{ k3s.manifests.templates }}"
+  when:
+    - groups[k3s.server_group][0] == inventory_hostname
+    - k3s.manifests.templates | length > 0
+
+- name: Ensure auto-deploying manifests are downloaded to the first server
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ k3s.manifests.path }}/{{ item.filename | default(item.url | basename) }}"
+    mode: "0644"
+  loop: "{{ k3s.manifests.urls }}"
+  when:
+    - groups[k3s.server_group][0] == inventory_hostname
+    - k3s.manifests.urls | length > 0

@@ -4,3 +4,11 @@ k3s:
   version: v1.27.4+k3s1
   server_group: 'k3s_servers'
   zone_regex: '.*'
+  cluster:
+    cidr: 10.0.0.0/8
+    pool:
+      - 10.0.0.0/8
+  manifests:
+    path: '/var/lib/rancher/k3s/server/manifests'
+    urls: []
+    templates: []
