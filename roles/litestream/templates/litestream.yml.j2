@@ -1,0 +1,7 @@
+---
+dbs:
+  - path: {{ litestream.db_path }}
+    replicas:
+{% for replica in litestream.replicas %}
+      - url: {{ replica.url }}
+{% endfor %}

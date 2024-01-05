@@ -1,0 +1,43 @@
+---
+- name: Detect machine architecture
+  ansible.builtin.set_fact:
+    go_arch: "{{ [ansible_architecture] | map('extract', go_architectures) | first }}"
+
+- name: Install litestream
+  ansible.builtin.apt:
+    deb: "https://github.com/benbjohnson/litestream/releases/download/v{{ litestream.version }}/litestream-v{{ litestream.version }}-linux-{{ go_arch }}.deb"
+
+- name: Create litestream configuration file
+  ansible.builtin.template:
+    src: litestream.yml.j2
+    dest: /etc/litestream.yml
+    owner: "{{ litestream.config.owner }}"
+    group: "{{ litestream.config.group }}"
+    mode: "{{ litestream.config.mode }}"
+
+- name: Ensure that the environment variables directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/system/litestream.service.d
+    state: directory
+    mode: "0755"
+
+- name: Create litestream environment variables
+  ansible.builtin.template:
+    src: local.conf.j2
+    dest: /etc/systemd/system/litestream.service.d/local.conf
+    owner: root
+    group: root
+    mode: "0644"
+  when: litestream.service.envs | length > 0
+
+- name: Remove litestream environment variables
+  ansible.builtin.file:
+    path: /etc/systemd/system/litestream.service.d/local.conf
+    state: absent
+  when: litestream.service.envs | length == 0
+
+- name: Configure litestream service
+  ansible.builtin.systemd:
+    name: litestream.service
+    state: "{{ litestream.service.state}}"
+    enabled: "{{ litestream.service.enabled }}"
