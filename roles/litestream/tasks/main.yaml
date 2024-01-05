@@ -39,5 +39,5 @@
 - name: Configure litestream service
   ansible.builtin.systemd:
     name: litestream.service
-    state: "{{ litestream.service.state}}"
+    state: "{{ litestream.service.state }}"
     enabled: "{{ litestream.service.enabled }}"
