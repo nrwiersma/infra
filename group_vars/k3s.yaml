@@ -1,0 +1,42 @@
+---
+k3s:
+  node_name: "{{ inventory_hostname_short }}"
+  version: v1.29.0+k3s1
+  server_group: 'k3s_servers'
+  zone_regex: '(k3s\d\d).*'
+  cluster:
+    cidr: 10.32.0.0/16
+    pool:
+      - 10.0.2.2/31
+      - 10.0.2.4/30
+      - 10.0.2.8/29
+      - 10.0.2.16/28
+      - 10.0.2.32/27
+      - 10.0.2.64/27
+      - 10.0.2.96/30
+  manifests:
+    path: '/var/lib/rancher/k3s/server/manifests'
+    urls:
+      # Essential Prometheus Operator CRDs (the rest are installed with the kube-prometheus-stack helm release)
+      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
+        filename: custom-prometheus-podmonitors.yaml
+      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
+        filename: custom-prometheus-prometheusrules.yaml
+      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_scrapeconfigs.yaml
+        filename: custom-prometheus-scrapeconfigs.yaml
+      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+        filename: custom-prometheus-servicemonitors.yaml
+      # Gateway API CRDs
+      - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+        filename: custom-gatewayapi-gatewayclasses.yaml
+      - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+        filename: custom-gatewayapi-gateways.yaml
+      - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+        filename: custom-gatewayapi-httproutes.yaml
+      - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+        filename: custom-gatewayapi-referencegrants.yaml
+      - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+        filename: custom-gatewayapi-tlsroutes.yaml
+    templates:
+      - custom-cilium-helmchart.yaml.j2
+      - custom-cilium-l2.yaml.j2

@@ -1,0 +1,15 @@
+---
+litestream:
+  version: "0.3.13"
+  db_path: /var/lib/rancher/k3s/server/db/state.db
+  replicas:
+    - url: gcs://wiersma-tech-backup/k3s/db
+  config:
+    owner: root
+    group: root
+    mode: "0640"
+  service:
+    enabled: true
+    state: started
+    envs:
+      GOOGLE_APPLICATION_CREDENTIALS: /var/lib/gcs/wiersma-tech-a1bb1c15865e.json

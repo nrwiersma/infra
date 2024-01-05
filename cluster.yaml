@@ -1,0 +1,24 @@
+---
+- name: Raspberry Pi Setup
+  hosts: k3s
+  become: true
+  roles:
+    - raspberrypi
+    - raspberrypi/cgroups
+    - raspberrypi/k3s
+    - raspberrypi/longhorn
+
+- name: K3S
+  hosts: k3s
+  become: true
+  roles:
+    - k3s
+
+- name: Litestream
+  hosts: k3s_servers
+  become: true
+  tasks:
+    - name: Install litestream
+      ansible.builtin.include_role:
+        name: litestream
+      when: groups['k3s_servers'] | length == 1

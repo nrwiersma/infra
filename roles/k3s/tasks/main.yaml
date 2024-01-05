@@ -1,0 +1,126 @@
+---
+- name: Detect machine architecture
+  ansible.builtin.set_fact:
+    k3s_arch: "{% if ansible_architecture == 'x86_64' %}amd64{% else %}arm64{% endif %}"
+
+- name: Check if k3s is already installed
+  ansible.builtin.stat:
+    path: /usr/local/bin/k3s
+  register: k3s_installed
+
+- name: Get k3s version
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      k3s --version | grep -oP 'k3s\sversion\s*\K\S+'
+  register: k3s_version
+  when: k3s_installed.stat.exists
+  changed_when: false
+
+- name: "Download k3s binary version {{ k3s.version }}"
+  ansible.builtin.get_url:
+    url: "https://github.com/k3s-io/k3s/releases/download/{{ k3s.version }}/k3s{% if ansible_architecture != 'x86_64' %}-{{ k3s_arch }}{% endif %}"
+    checksum: "sha256:https://github.com/k3s-io/k3s/releases/download/{{ k3s.version }}/sha256sum-{{ k3s_arch }}.txt"
+    dest: /usr/local/bin/k3s
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Restart k3s.service
+  when: not k3s_installed.stat.exists or k3s_version.stdout != k3s.version
+
+- name: Create k3s directory
+  ansible.builtin.file:
+    path: /etc/rancher/k3s/
+    state: directory
+    mode: "0755"
+
+- name: Configure k3s
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart k3s.service
+
+- name: Create k3s service file
+  ansible.builtin.template:
+    src: "k3s.service.j2"
+    dest: /etc/systemd/system/k3s.service
+    owner: root
+    group: root
+    mode: "0755"
+  notify:
+    - Systemd Reload
+    - Enable k3s.service
+    - Restart k3s.service
+
+- name: Flush handlers on first server
+  ansible.builtin.meta: flush_handlers
+  when: groups[k3s.server_group][0] == inventory_hostname
+
+- name: Wait for token file generation
+  ansible.builtin.stat:
+    path: /var/lib/rancher/k3s/server/node-token
+  register: k3s_token_file
+  until: k3s_token_file.stat.exists
+  retries: 60
+  delay: 1
+  run_once: true
+  delegate_to: "{{ groups[k3s.server_group][0] }}"
+
+- name: Get k3s token file from first server
+  ansible.builtin.slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: k3s_token
+  run_once: true
+  delegate_to: "{{ groups[k3s.server_group][0] }}"
+
+- name: Create k3s token directory
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/
+    state: directory
+    mode: "0755"
+  when: groups[k3s.server_group][0] != inventory_hostname
+
+- name: Create k3s token file on other nodes
+  ansible.builtin.copy:
+    content: "{{ k3s_token['content'] | b64decode }}"
+    dest: /var/lib/rancher/k3s/server/node-token
+    owner: root
+    group: root
+    mode: "0600"
+  when: groups[k3s.server_group][0] != inventory_hostname
+  notify: Restart k3s.service
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure that the manifests directory exists
+  ansible.builtin.file:
+    path: "{{ k3s.manifests.path }}"
+    state: directory
+    mode: "0755"
+  when: >-
+    groups[k3s.server_group][0] == inventory_hostname and
+    (k3s.manifests.templates | length > 0 or k3s.manifests.urls | length > 0)
+
+- name: Ensure auto-deploying manifests are copied to the first server
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ k3s.manifests.path }}/{{ item | basename | replace('.j2', '') }}"
+    mode: "0644"
+  loop: "{{ k3s.manifests.templates }}"
+  when:
+    - groups[k3s.server_group][0] == inventory_hostname
+    - k3s.manifests.templates | length > 0
+
+- name: Ensure auto-deploying manifests are downloaded to the first server
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ k3s.manifests.path }}/{{ item.filename | default(item.url | basename) }}"
+    mode: "0644"
+  loop: "{{ k3s.manifests.urls }}"
+  when:
+    - groups[k3s.server_group][0] == inventory_hostname
+    - k3s.manifests.urls | length > 0

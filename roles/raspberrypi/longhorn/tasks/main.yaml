@@ -1,0 +1,18 @@
+---
+- name: Install longhorn required packages
+  ansible.builtin.apt:
+    pkg:
+      - open-iscsi
+      - nfs-common
+      - curl
+      - util-linux
+      - grep
+      - mawk
+      - libblkid1
+    state: present
+
+- name: Enable and start iscsid
+  ansible.builtin.systemd:
+    name: iscsid
+    enabled: true
+    state: started
