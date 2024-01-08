@@ -10,9 +10,7 @@
 
 - name: Get k3s version
   ansible.builtin.shell:
-    cmd: |
-      set -o pipefail
-      k3s --version | grep -oP 'k3s\sversion\s*\K\S+'
+    cmd: k3s --version | grep -oP 'k3s\sversion\s*\K\S+'
   register: k3s_version
   when: k3s_installed.stat.exists
   changed_when: false

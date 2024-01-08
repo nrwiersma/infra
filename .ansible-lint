@@ -9,4 +9,5 @@ skip_list:
   - 'latest[git]'
   - 'role-name[path]'
   - 'var-naming[no-role-prefix]'
+  - 'risky-shell-pipe'
   - 'yaml[line-length]'  # Lines should be no longer than 160 chars

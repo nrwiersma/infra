@@ -5,7 +5,7 @@ k3s:
   server_group: 'k3s_servers'
   zone_regex: '(k3s\d\d).*'
   cluster:
-    cidr: 10.32.0.0/16
+    cidr: 10.42.0.0/16
     pool:
       - 10.0.2.2/31
       - 10.0.2.4/30
