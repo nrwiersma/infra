@@ -24,3 +24,8 @@ configured with my [config](https://github.com/nrwiersma/looking-glass-config).
 
 The Home Lab is a Super6C fully loaded, running [k3s](https://k3s.io/), 
 [cilium](https://cilium.io/) and [litestream](https://litestream.io/) for DB backups.
+
+#### Storage Drives
+
+The storage NVME drives are each 4TB. In order to see the entire drive, they must be converted to a Hybrid Partition Table.
+Boot the system using an external drive, and run the `.setup/mbr2gpt` to convert the partition table.

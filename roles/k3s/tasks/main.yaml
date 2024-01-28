@@ -50,7 +50,6 @@
     mode: "0755"
   notify:
     - Systemd Reload
-    - Enable k3s.service
     - Restart k3s.service
 
 - name: Flush handlers on first server
@@ -90,6 +89,12 @@
     mode: "0600"
   when: groups[k3s.server_group][0] != inventory_hostname
   notify: Restart k3s.service
+
+- name: Configure k3s service
+  ansible.builtin.systemd:
+    name: k3s.service
+    state: started
+    enabled: true
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

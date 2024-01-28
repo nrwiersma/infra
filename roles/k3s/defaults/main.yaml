@@ -3,7 +3,9 @@ k3s:
   node_name: "{{ inventory_hostname_short }}"
   version: v1.27.4+k3s1
   server_group: 'k3s_servers'
-  zone_regex: '.*'
+  storage_group: 'k3s_storage'
+  zone_regex: '(.*)'
+  zone_replace: '\1'
   cluster:
     cidr: 10.0.0.0/8
     pool:
