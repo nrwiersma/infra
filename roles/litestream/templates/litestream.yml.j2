@@ -4,4 +4,7 @@ dbs:
     replicas:
 {% for replica in litestream.replicas %}
       - url: {{ replica.url }}
+{% if 'sync_interval' in replica %}
+        sync-interval: "{{ replica.sync_interval }}"
+{% endif %}
 {% endfor %}
