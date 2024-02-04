@@ -22,13 +22,11 @@ spec:
     securityContext:
       privileged: true
 
-    autoDirectNodeRoutes: true
-
     l2announcements:
       enabled: true
-      leaseDuration: 120s
+      leaseDuration: 300s
       leaseRenewDeadline: 60s
-      leaseRetryPeriod: 1s
+      leaseRetryPeriod: 5s
 
     gatewayAPI:
       enabled: true
@@ -51,7 +49,7 @@ spec:
 
     loadBalancer:
       algorithm: maglev
-      mode: dsr
+      mode: snat
 
     bpf:
       masquerade: true
@@ -72,8 +70,6 @@ spec:
 
     operator:
       rollOutPods: true
-
-    tunnel: disabled
 
     prometheus:
       enabled: true
