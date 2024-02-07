@@ -29,3 +29,12 @@ The Home Lab is a Super6C fully loaded, running [k3s](https://k3s.io/),
 
 The storage NVME drives are each 4TB. In order to see the entire drive, they must be converted to a Hybrid Partition Table.
 Boot the system using an external drive, and run the `.setup/mbr2gpt` to convert the partition table.
+
+#### Cilium Proxy
+
+Envoy does not work on Raspberry Pi OS due to an incompatibility with `tcmalloc`. To get it to work,
+[cilium proxy](https://github.com/cilium/proxy) needs to be rebuild using the following command:
+
+```
+ARCH=arm64 BAZEL_BUILD_OPTS="--define tcmalloc=gperftools" make docker-image-envoy
+```
