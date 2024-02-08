@@ -7,15 +7,8 @@ k3s:
   zone_regex: '^k3s(\d\d).*'
   zone_replace: 'rack\1'
   cluster:
-    cidr: 10.42.0.0/16
     pool:
-      - 10.0.2.2/31
-      - 10.0.2.4/30
-      - 10.0.2.8/29
-      - 10.0.2.16/28
-      - 10.0.2.32/27
-      - 10.0.2.64/27
-      - 10.0.2.96/30
+      - 10.0.2.2-10.0.2.99
   manifests:
     path: '/var/lib/rancher/k3s/server/manifests'
     urls:
@@ -40,5 +33,5 @@ k3s:
       - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
         filename: custom-gatewayapi-tlsroutes.yaml
     templates:
-      - custom-cilium-helmchart.yaml.j2
-      - custom-cilium-l2.yaml.j2
+      - custom-metallb-helmchart.yaml.j2
+      - custom-metallb-l2.yaml.j2
