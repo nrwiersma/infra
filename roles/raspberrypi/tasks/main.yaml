@@ -13,3 +13,11 @@
   ansible.builtin.apt:
     autoclean: true
     autoremove: true
+
+- name: Disable swap at boot
+  shell: "{{ item }}"
+  with_items:
+    - swapoff -a
+    - dphys-swapfile swapoff
+    - dphys-swapfile uninstall
+    - update-rc.d dphys-swapfile disable

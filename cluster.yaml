@@ -13,12 +13,3 @@
   become: true
   roles:
     - k3s
-
-- name: Litestream
-  hosts: k3s_servers
-  become: true
-  tasks:
-    - name: Install litestream
-      ansible.builtin.include_role:
-        name: litestream
-      when: groups['k3s_servers'] | length == 1
