@@ -12,4 +12,11 @@
   hosts: k3s
   become: true
   roles:
+    - node_exporter
     - k3s
+
+- name: K3S Backup
+  hosts: k3s_servers
+  become: true
+  roles:
+    - k3s/backup

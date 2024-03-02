@@ -1,0 +1,33 @@
+---
+- name: Create node_exporter text-collectors directory
+  ansible.builtin.file:
+    path: /var/lib/node_exporter/textfile_collector
+    state: directory
+    owner: node_exporter
+    group: node_exporter
+    mode: '0755'
+
+- name: Install nvme_metrics requirements
+  ansible.builtin.apt:
+    name:
+      - nvme-cli
+      - jq
+      - moreutils
+    state: present
+    install_recommends: true
+
+- name: Download NVME metrics
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/prometheus-community/node-exporter-textfile-collector-scripts/master/nvme_metrics.sh"
+    dest: /usr/local/bin/nvme_metrics
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create nvme_metrics cron
+  ansible.builtin.copy:
+    content: |
+      #Ansible: nvme_metrics
+      */1 * * * * root /usr/local/bin/nvme_metrics | sponge /var/lib/node_exporter/textfile_collector/nvme_metrics.prom
+    dest: /etc/cron.d/nvme_metrics
+    mode: '0644'

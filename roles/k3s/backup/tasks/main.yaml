@@ -1,0 +1,46 @@
+---
+- name: Create node_exporter text-collectors directory
+  ansible.builtin.file:
+    path: /var/lib/node_exporter/textfile_collector
+    state: directory
+    owner: node_exporter
+    group: node_exporter
+    mode: '0755'
+
+- name: Install k3s backup requirements
+  ansible.builtin.apt:
+    name:
+      - sqlite3
+      - apt-transport-https
+      - ca-certificates
+    state: present
+    install_recommends: true
+
+- name: Import the Google Cloud Platform public key
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+- name: Add the Cloud SDK distribution URI as a package source
+  ansible.builtin.apt_repository:
+    repo: 'deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main'
+
+- name: Install the Cloud SDK
+  ansible.builtin.apt:
+    name: google-cloud-sdk
+    update_cache: true
+
+- name: Create k3s backup script
+  ansible.builtin.copy:
+    src: k3s_backup.sh
+    dest: /usr/local/bin/k3s_backup
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create k3s backup cron
+  ansible.builtin.copy:
+    content: |
+      #Ansible: k3s_backup
+      0 */6 * * * root /usr/local/bin/k3s_backup | sponge /var/lib/node_exporter/textfile_collector/k3s_backup.prom
+    dest: /etc/cron.d/k3s_backup
+    mode: '0644'
