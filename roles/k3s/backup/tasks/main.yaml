@@ -3,8 +3,8 @@
   ansible.builtin.file:
     path: /var/lib/node_exporter/textfile_collector
     state: directory
-    owner: node_exporter
-    group: node_exporter
+    owner: root
+    group: root
     mode: '0755'
 
 - name: Install k3s backup requirements
@@ -24,14 +24,14 @@
   ansible.builtin.apt_repository:
     repo: 'deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main'
 
-- name: Install the Cloud SDK
+- name: Install the Cloud CLI
   ansible.builtin.apt:
-    name: google-cloud-sdk
+    name: google-cloud-cli
     update_cache: true
 
 - name: Create k3s backup script
-  ansible.builtin.copy:
-    src: k3s_backup.sh
+  ansible.builtin.template:
+    src: "k3s_backup.sh.j2"
     dest: /usr/local/bin/k3s_backup
     owner: root
     group: root
@@ -41,6 +41,7 @@
   ansible.builtin.copy:
     content: |
       #Ansible: k3s_backup
-      0 */6 * * * root /usr/local/bin/k3s_backup | sponge /var/lib/node_exporter/textfile_collector/k3s_backup.prom
+      PATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin
+      0 */6 * * * root /usr/local/bin/k3s_backup
     dest: /etc/cron.d/k3s_backup
     mode: '0644'

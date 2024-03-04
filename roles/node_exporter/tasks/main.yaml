@@ -3,8 +3,8 @@
   ansible.builtin.file:
     path: /var/lib/node_exporter/textfile_collector
     state: directory
-    owner: node_exporter
-    group: node_exporter
+    owner: root
+    group: root
     mode: '0755'
 
 - name: Install nvme_metrics requirements
@@ -28,6 +28,7 @@
   ansible.builtin.copy:
     content: |
       #Ansible: nvme_metrics
+      PATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin
       */1 * * * * root /usr/local/bin/nvme_metrics | sponge /var/lib/node_exporter/textfile_collector/nvme_metrics.prom
     dest: /etc/cron.d/nvme_metrics
     mode: '0644'

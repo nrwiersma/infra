@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -eu
+
+TEXTFILE_COLLECTOR_DIR=/var/lib/node_exporter/textfile_collector/
+
+# Ensure predictable numeric / date formats, etc.
+export LC_ALL=C
+{% for key, value in k3s_backup.envs.items() %}
+export {{ key }}={{ value }}
+{% endfor %}
+
+# Grab the start time.
+START="$(date +%s)"
+
+# Backup the k3s DB into a temp file.
+sqlite3 /var/lib/rancher/k3s/server/db/state.db "VACUUM INTO '/tmp/k3s.bak'"
+
+# Integrity check the backup.
+sqlite3 /tmp/k3s.bak 'PRAGMA integrity_check'
+
+# GZip and upload the backup into
+gzip -f /tmp/k3s.bak
+gcloud storage cp /tmp/k3s.bak.gz gs://wiersma-tech-backup/k3s/db/backup-`date +%a-%H`.gz
+
+# Clean up
+rm /tmp/k3s.bak.gz
+
+# Grab the end time
+END="$(date +%s)"
+
+cat << EOF > "$TEXTFILE_COLLECTOR_DIR/k3s_backup.prom.$$"
+# HELP k3s_backup_duration_seconds Backup duration in seconds
+# TYPE k3s_backup_duration_seconds gauge
+k3s_backup_duration_seconds $(($END - $START))
+
+# HELP k3s_backup_last_run_seconds Last successful backup timestamp in seconds
+# TYPE k3s_backup_last_run_seconds gauge
+k3s_backup_last_run_seconds $END
+EOF
+
+# Rename the temporary file atomically.
+# This avoids the node exporter seeing half a file.
+mv "$TEXTFILE_COLLECTOR_DIR/k3s_backup.prom.$$" "$TEXTFILE_COLLECTOR_DIR/k3s_backup.prom"
