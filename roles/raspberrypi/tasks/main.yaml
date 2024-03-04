@@ -15,9 +15,10 @@
     autoremove: true
 
 - name: Disable swap at boot
-  shell: "{{ item }}"
+  ansible.builtin.command: "{{ item }}"
   with_items:
     - swapoff -a
     - dphys-swapfile swapoff
     - dphys-swapfile uninstall
     - update-rc.d dphys-swapfile disable
+  changed_when: false
