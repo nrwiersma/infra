@@ -23,7 +23,7 @@ configured with my [config](https://github.com/nrwiersma/looking-glass-config).
 ### Home Lab Cluster (*cluster.yaml*)
 
 The Home Lab is a Super6C fully loaded, running [k3s](https://k3s.io/), 
-[cilium](https://cilium.io/) and [litestream](https://litestream.io/) for DB backups.
+[metallb](https://metallb.universe.tf/) and cron for DB backups.
 
 #### Storage Drives
 

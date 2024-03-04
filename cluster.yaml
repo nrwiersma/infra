@@ -12,13 +12,11 @@
   hosts: k3s
   become: true
   roles:
+    - node_exporter
     - k3s
 
-- name: Litestream
+- name: K3S Backup
   hosts: k3s_servers
   become: true
-  tasks:
-    - name: Install litestream
-      ansible.builtin.include_role:
-        name: litestream
-      when: groups['k3s_servers'] | length == 1
+  roles:
+    - k3s/backup
