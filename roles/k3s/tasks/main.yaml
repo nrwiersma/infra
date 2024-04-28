@@ -127,3 +127,23 @@
   when:
     - groups[k3s.server_group][0] == inventory_hostname
     - k3s.manifests.urls | length > 0
+
+- name: Copy avahi services
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /etc/avahi/services/
+    owner: root
+    group: root
+    mode: "0644"
+  with_fileglob: "files/avahi/*.service"
+  when:
+    - groups[k3s.server_group][0] == inventory_hostname
+  notify:
+    - Restart Avahi
+
+- name: Ensure service is running
+  ansible.builtin.service:
+    name: avahi-daemon
+    state: started
+  when:
+    - groups[k3s.server_group][0] == inventory_hostname
