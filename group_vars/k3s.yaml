@@ -22,16 +22,8 @@ k3s:
       - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
         filename: custom-prometheus-servicemonitors.yaml
       # Gateway API CRDs
-      - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-        filename: custom-gatewayapi-gatewayclasses.yaml
-      - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-        filename: custom-gatewayapi-gateways.yaml
-      - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
-        filename: custom-gatewayapi-httproutes.yaml
-      - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-        filename: custom-gatewayapi-referencegrants.yaml
-      - url: https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-        filename: custom-gatewayapi-tlsroutes.yaml
+      - url: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/experimental-install.yaml
+        filename: custom-gatewayapi.yaml
     templates:
       - custom-metallb-helmchart.yaml.j2
       - custom-metallb-l2.yaml.j2
