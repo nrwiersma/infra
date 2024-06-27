@@ -7,6 +7,8 @@ This is a set of ansible playbooks for managing my home infrastructure.
 
 ## Playbooks
 
+To run a playbook, use `ansible-playbook <playbook.yaml>`.
+
 ### Speakers (*speakers.yaml*)
 
 The speaker systems are Raspberry Pi Zeros with HiFiBerry Amp2+ HATs connected to

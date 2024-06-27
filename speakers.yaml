@@ -19,7 +19,7 @@
     - snapcast/server
 
 - name: Deploy snapclient
-  hosts: speakers
+  hosts: snapclient
   become: true
   roles:
     - snapcast/client
