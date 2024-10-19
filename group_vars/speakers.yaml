@@ -12,7 +12,7 @@ raspberrypi:
     disable:
       - dtparam=audio=on
 raspotify:
-  deb_path: "https://github.com/dtcooper/raspotify/releases/download/0.43.34/raspotify_0.43.34.librespot.v0.4.2-70997e9_armhf.deb"
+  deb_path: "https://github.com/dtcooper/raspotify/releases/download/0.45.0/raspotify_0.45.0.librespot.v0.5.0-84d28e8_armhf.deb"
   config_regexp:
     'LIBRESPOT_INITIAL_VOLUME=': 'LIBRESPOT_INITIAL_VOLUME="50"'
     'LIBRESPOT_VOLUME_RANGE=': 'LIBRESPOT_VOLUME_RANGE="80.0"'

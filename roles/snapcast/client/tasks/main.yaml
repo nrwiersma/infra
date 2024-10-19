@@ -4,3 +4,9 @@
     name: snapclient
     state: latest
     update_cache: true
+  when: snapclient.deb_path is not defined or not snapclient.deb_path
+
+- name: Install snapclient from package
+  ansible.builtin.apt:
+    deb: "{{ snapclient.deb_path }}"
+  when: snapclient.deb_path is defined and snapclient.deb_path

@@ -4,6 +4,12 @@
     name: snapserver
     state: latest
     update_cache: true
+  when: snapserver.deb_path is not defined or not snapserver.deb_path
+
+- name: Install snapserver from package
+  ansible.builtin.apt:
+    deb: "{{ snapserver.deb_path }}"
+  when: snapserver.deb_path is defined and snapserver.deb_path
 
 - name: Update default source
   ansible.builtin.lineinfile:
