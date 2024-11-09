@@ -1,0 +1,15 @@
+---
+- name: Raspberry Pi Setup
+  hosts: pwr-mon
+  become: true
+  roles:
+    - raspberrypi
+
+- name: Setup
+  hosts: pwr-mon
+  become: true
+  roles:
+    - influxdb
+    - influxdb/backup
+    - grafana
+    - grafana/backup

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -eu
+
+# Ensure predictable numeric / date formats, etc.
+export LC_ALL=C
+{% for key, value in grafana_backup.envs.items() %}
+export {{ key }}={{ value }}
+{% endfor %}
+
+# Backup the grafana DB into a temp file.
+sqlite3 /var/lib/grafana/grafana.db "VACUUM INTO '/tmp/grafana.bak'"
+
+# Integrity check the backup.
+sqlite3 /tmp/grafana.bak 'PRAGMA integrity_check'
+
+# GZip and upload the backup into
+gzip -f /tmp/grafana.bak
+gcloud storage cp /tmp/grafana.bak.gz gs://wiersma-tech-backup/grafana/backup-`date +%a-%H`.gz
+
+# Clean up
+rm /tmp/grafana.bak.gz

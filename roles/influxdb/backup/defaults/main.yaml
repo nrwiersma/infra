@@ -1,0 +1,4 @@
+---
+influxdb_backup:
+  token: EXAMPLE-TOKEN
+  envs: {}

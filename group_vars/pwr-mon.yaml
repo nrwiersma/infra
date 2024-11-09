@@ -1,0 +1,15 @@
+---
+influxdb:
+  org: home
+  username: admin
+  password: influx-admin
+  admin_token: SKLoaGCGZvAilbXkFdA9w6lz5Cu2j8lK
+influxdb_backup:
+  token: SKLoaGCGZvAilbXkFdA9w6lz5Cu2j8lK
+  envs:
+    CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE: /var/lib/gcs/wiersma-tech-b3513a45bb2f.json
+grafana:
+  domain: pwr-mon.wiersma.tech
+grafana_backup:
+  envs:
+    CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE: /var/lib/gcs/wiersma-tech-b3513a45bb2f.json

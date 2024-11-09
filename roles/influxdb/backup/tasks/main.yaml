@@ -1,0 +1,41 @@
+---
+- name: Download Google Cloud APT key
+  ansible.builtin.get_url:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    dest: /tmp/cloud-google-key.gpg
+    mode: "0644"
+  register: key_download
+
+- name: Process and install the key
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      cat /tmp/cloud-google-key.gpg | gpg --dearmor | tee /usr/share/keyrings/cloud.google.gpg > /dev/null
+    executable: /bin/bash
+  changed_when: checksum_verify.rc != 0
+
+- name: Add the Cloud SDK distribution URI as a package source
+  ansible.builtin.apt_repository:
+    repo: 'deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main'
+
+- name: Install the Cloud CLI
+  ansible.builtin.apt:
+    name: google-cloud-cli
+    update_cache: true
+
+- name: Create InfluxDB backup script
+  ansible.builtin.template:
+    src: "influxdb_backup.sh.j2"
+    dest: /usr/local/bin/influxdb_backup
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create InfluxDB backup cron
+  ansible.builtin.copy:
+    content: |
+      #Ansible: influxdb_backup
+      PATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin
+      0 0 * * * root /usr/local/bin/influxdb_backup
+    dest: /etc/cron.d/influxdb_backup
+    mode: '0644'
