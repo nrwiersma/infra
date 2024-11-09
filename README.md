@@ -22,6 +22,11 @@ The smart mirror is a Raspberry Pi 4B (although a 3B works as well) connected to
 screen via HDMI. It runs [looking glass](https://github.com/glasslabs/looking-glass)
 configured with my [config](https://github.com/nrwiersma/looking-glass-config).
 
+### Power Monitor
+
+The power monitor is a Raspberry Pi PoE+ running InfluxDB and Grafana. Electricity usage
+and inverter data is pushed to the InfluxDB. Cron backups are made daily.
+
 ### Home Lab Cluster (*cluster.yaml*)
 
 The Home Lab is a Super6C fully loaded, running [k3s](https://k3s.io/), 

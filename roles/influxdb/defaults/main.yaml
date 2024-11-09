@@ -1,0 +1,6 @@
+---
+influxdb:
+  org: example-org
+  username: example-user
+  password: ExAmPl3PA55W0rD
+  admin_token: EXAMPLE-TOKEN

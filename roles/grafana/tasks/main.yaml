@@ -1,0 +1,67 @@
+---
+- name: Install Grafana Dependencies
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - curl
+      - gnupg
+    state: present
+    update_cache: true
+
+- name: Download Grafana APT key
+  ansible.builtin.get_url:
+    url: https://apt.grafana.com/gpg.key
+    dest: /tmp/grafana-archive.key
+    mode: "0644"
+  register: key_download
+
+- name: Process and install the key
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      cat /tmp/grafana-archive.key | gpg --dearmor | tee /etc/apt/keyrings/grafana.gpg > /dev/null
+    executable: /bin/bash
+  changed_when: checksum_verify.rc != 0
+
+- name: Add the Grafana as a package source
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main"
+
+- name: Install Grafana and Nginx
+  ansible.builtin.apt:
+    name:
+      - grafana
+      - nginx
+    state: present
+    update_cache: true
+
+- name: Create Grafana Config
+  ansible.builtin.template:
+    src: grafana.ini.j2
+    dest: "/etc/grafana/grafana.ini"
+    force: true
+    owner: root
+    group: grafana
+    mode: 0640
+  notify:
+    - Restart Grafana
+
+- name: Copy nginx configuration
+  vars:
+    csp: "{{ grafana.csp | default(csp_default) }}"
+    fp: "{{ grafana.fp | default(fp_default) }}"
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/{{ grafana.domain }}.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Restart Nginx
+
+- name: Activate grafana web site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/{{ grafana.domain }}.conf
+    dest: /etc/nginx/sites-enabled/{{ grafana.domain }}.conf
+    state: link
+  notify: Restart Nginx

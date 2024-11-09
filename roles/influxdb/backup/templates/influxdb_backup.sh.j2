@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -eu
+
+# Ensure predictable numeric / date formats, etc.
+export LC_ALL=C
+{% for key, value in influxdb_backup.envs.items() %}
+export {{ key }}={{ value }}
+{% endfor %}
+
+# Grab the start time.
+START="$(date +%s)"
+
+# Backup the InfluxDB into a temp file.
+influx backup /tmp/influxdb.bak -t "{{ influxdb_backup.token }}"
+
+# GZip and upload the backup into
+tar -czvf /tmp/influxdb.bak.tar.gz /tmp/influxdb.bak
+gcloud storage cp /tmp/influxdb.bak.tar.gz gs://wiersma-tech-backup/influxdb/backup-`date +%a-%H`.tar.gz
+
+# Clean up
+rm -R /tmp/influxdb.bak
+rm  /tmp/influxdb.bak.tar.gz
