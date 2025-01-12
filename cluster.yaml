@@ -4,6 +4,7 @@
   become: true
   roles:
     - raspberrypi
+    - raspberrypi/bootconfig
     - raspberrypi/cgroups
     - raspberrypi/k3s
     - raspberrypi/longhorn

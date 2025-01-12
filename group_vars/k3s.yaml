@@ -1,4 +1,10 @@
 ---
+raspberrypi:
+  boot_config:
+    file: /boot/firmware/config.txt
+    add:
+      - dtoverlay=disable-bt
+      - dtoverlay=i2c-fan,emc2301,i2c_csi_dsi
 k3s:
   node_name: "{{ inventory_hostname_short }}"
   version: v1.30.0+k3s1
