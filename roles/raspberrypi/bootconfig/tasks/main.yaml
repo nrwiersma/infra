@@ -4,7 +4,7 @@
     line: '{{ item }}'
     dest: "{{ raspberrypi.boot_config.file }}"
     regexp: "^{{ item }}"
-  with_items: '{{ raspberrypi.boot_config.add }}'
+  with_items: '{{ raspberrypi.boot_config.add | default([]) }}'
   notify: Reboot and wait for restart
 
 - name: "Adjusting lines in {{ raspberrypi.boot_config.file }}"
@@ -13,7 +13,7 @@
     dest: "{{ raspberrypi.boot_config.file }}"
     regexp: "^{{ item.find }}$"
     backrefs: true
-  with_items: '{{ raspberrypi.boot_config.replace }}'
+  with_items: '{{ raspberrypi.boot_config.replace | default([]) }}'
   notify: Reboot and wait for restart
 
 - name: "Disabling lines in {{ raspberrypi.boot_config.file }}"
@@ -22,5 +22,5 @@
     dest: "{{ raspberrypi.boot_config.file }}"
     regexp: "^{{ item }}$"
     backrefs: true
-  with_items: '{{ raspberrypi.boot_config.disable }}'
+  with_items: '{{ raspberrypi.boot_config.disable | default([]) }}'
   notify: Reboot and wait for restart

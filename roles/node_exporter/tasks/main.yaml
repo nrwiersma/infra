@@ -16,9 +16,9 @@
     state: present
     install_recommends: true
 
-- name: Download NVME metrics
-  ansible.builtin.get_url:
-    url: "https://raw.githubusercontent.com/prometheus-community/node-exporter-textfile-collector-scripts/master/nvme_metrics.sh"
+- name: Install NVME metrics script
+  ansible.builtin.copy:
+    src: "files/nvme_metrics.sh"
     dest: /usr/local/bin/nvme_metrics
     owner: root
     group: root
