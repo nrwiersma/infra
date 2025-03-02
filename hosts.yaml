@@ -1,0 +1,42 @@
+speakers:
+  hosts:
+    bar-speakers.wiersma.lan: {}
+    kitchen-speakers.wiersma.lan: {}
+    veranda-speakers.wiersma.lan: {}
+    ensuite-speakers.wiersma.lan: {}
+
+snapclient:
+  hosts:
+    bar-speakers.wiersma.lan: {}
+    kitchen-speakers.wiersma.lan: {}
+    veranda-speakers.wiersma.lan: {}
+
+snapserver:
+  hosts:
+    bar-speakers.wiersma.lan: {}
+
+mirror:
+  hosts:
+    mirror.wiersma.iot: {}
+
+k3s:
+  children:
+    k3s_servers: {}
+    k3s_agents: {}
+
+k3s_servers:
+  hosts:
+    k3s0101.wiersma.tech: {}
+
+k3s_agents:
+  hosts:
+    k3s01[02:04].wiersma.tech: {}
+    k3s01s[01:02].wiersma.tech: {}
+
+k3s_storage:
+  hosts:
+    k3s01s[01:02].wiersma.tech: {}
+
+pwrmon:
+  hosts:
+    pwr-mon.wiersma.tech: {}
