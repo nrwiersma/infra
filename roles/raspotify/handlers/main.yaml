@@ -1,5 +1,0 @@
----
-- name: Restart raspotify
-  ansible.builtin.service:
-    name: raspotify
-    state: restarted

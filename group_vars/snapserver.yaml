@@ -1,6 +1,0 @@
----
-snapclient:
-  deb_path: "https://github.com/badaix/snapcast/releases/download/v0.29.0/snapclient_0.29.0-1_armhf_bookworm.deb"
-snapserver:
-  deb_path: "https://github.com/badaix/snapcast/releases/download/v0.29.0/snapserver_0.29.0-1_armhf_bookworm.deb"
-  source: librespot:///librespot?name=all_speakers&devicename=All Speakers&bitrate=160&volume=50&autoplay=true

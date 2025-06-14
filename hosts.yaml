@@ -1,20 +1,3 @@
-speakers:
-  hosts:
-    bar-speakers.wiersma.lan: {}
-    kitchen-speakers.wiersma.lan: {}
-    veranda-speakers.wiersma.lan: {}
-    ensuite-speakers.wiersma.lan: {}
-
-snapclient:
-  hosts:
-    bar-speakers.wiersma.lan: {}
-    kitchen-speakers.wiersma.lan: {}
-    veranda-speakers.wiersma.lan: {}
-
-snapserver:
-  hosts:
-    bar-speakers.wiersma.lan: {}
-
 mirror:
   hosts:
     mirror.wiersma.iot: {}
