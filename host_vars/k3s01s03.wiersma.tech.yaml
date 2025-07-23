@@ -1,0 +1,10 @@
+---
+raspberrypi:
+  boot_config:
+    file: /boot/firmware/config.txt
+    add:
+      - dtoverlay=disable-bt
+      - dtoverlay=i2c-fan,emc2301,i2c_csi_dsi0
+    replace:
+      - find: "#dtparam=i2c_arm=on"
+        with: dtparam=i2c_arm=on
