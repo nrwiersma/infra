@@ -1,12 +1,12 @@
 ---
 - name: Raspberry Pi Setup
-  hosts: pwrmon
+  hosts: pwr_mon
   become: true
   roles:
     - raspberrypi
 
 - name: Setup
-  hosts: pwrmon
+  hosts: pwr_mon
   become: true
   roles:
     - influxdb

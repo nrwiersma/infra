@@ -20,6 +20,6 @@ k3s_storage:
   hosts:
     k3s01s[01:03].wiersma.tech: {}
 
-pwrmon:
+pwr_mon:
   hosts:
     pwr-mon.wiersma.tech: {}
