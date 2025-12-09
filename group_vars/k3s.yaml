@@ -7,7 +7,7 @@ raspberrypi:
       - dtoverlay=i2c-fan,emc2301,i2c_csi_dsi
 k3s:
   node_name: "{{ inventory_hostname_short }}"
-  version: v1.33.0+k3s1
+  version: v1.34.2+k3s1
   server_group: 'k3s_servers'
   storage_group: 'k3s_storage'
   zone_regex: '^k3s(\d\d).*'
@@ -19,13 +19,13 @@ k3s:
     path: '/var/lib/rancher/k3s/server/manifests'
     urls:
       # Essential Prometheus Operator CRDs (the rest are installed with the kube-prometheus-stack helm release)
-      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
+      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.87.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
         filename: custom-prometheus-podmonitors.yaml
-      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
+      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.87.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
         filename: custom-prometheus-prometheusrules.yaml
-      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_scrapeconfigs.yaml
+      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.87.0/example/prometheus-operator-crd/monitoring.coreos.com_scrapeconfigs.yaml
         filename: custom-prometheus-scrapeconfigs.yaml
-      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.70.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+      - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.87.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
         filename: custom-prometheus-servicemonitors.yaml
       # Gateway API CRDs
       - url: https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/experimental-install.yaml
