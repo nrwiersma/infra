@@ -1,4 +1,8 @@
-# Home Infrastructure Management
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="http://svg.wiersma.co.za/github/project.v2?title=infra&tag=home%20infrastructure%20management&mode=dark">
+  <source media="(prefers-color-scheme: light)" srcset="http://svg.wiersma.co.za/github/project.v2?title=infra&tag=home%20infrastructure%20management">
+  <img alt="Logo" src="http://svg.wiersma.co.za/github/project.v2?title=infra&tag=home%20infrastructure%20management">
+</picture>
 
 [![Build Status](https://github.com/nrwiersma/infra/actions/workflows/tests.yml/badge.svg)](https://github.com/nrwiersma/infra/actions)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hamba/avro/master/LICENSE)
